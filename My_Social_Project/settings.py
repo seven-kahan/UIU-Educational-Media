@@ -43,11 +43,10 @@ INSTALLED_APPS = [
     'App_Login',
     'App_Posts',
     'crispy_forms',
-    "crispy_bootstrap4",
+    'crispy_bootstrap4',
 ]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
-CRISPY_ALLOWED_TEMPLATE_PACKS = 'bootstrap4'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
