@@ -24,6 +24,10 @@
     <img src="/media/default.png" width="250px" height="250px" class="rounded-circle">
     {% endif %}
   </div>
+<<<<<<< HEAD
+=======
+  <!-- profile information -->
+>>>>>>> 1373191e07ec506eec93892bf2da1207e9208217
   <div class="col-sm-8">
     <h1>{{user_other.username}} &nbsp;
       {% if not already_followed %}
@@ -37,7 +41,25 @@
     <br>
     <h3>{{user_other.user_profile.full_name}}</h3>
     <p>{{user_other.user_profile.description|linebreaks}}</p>
+<<<<<<< HEAD
   </div>
+=======
+    <p> Date of birth: {{ user_other.user_profile.dob }} </p>
+    <p>
+      Personal website (if any):
+      <a style="text-decoration:none;" href="{{ user.user_profile.website }}" target="_blank">
+        {{ user_other.user_profile.website }}
+      </a>
+    </p>
+    <p>
+      Facebook (if any):
+      <a style="text-decoration:none;" href="{{ user.user_profile.website }}" target="_blank">
+        {{ user_other.user_profile.facebook }}
+      </a>
+    </p>
+  </div>
+
+>>>>>>> 1373191e07ec506eec93892bf2da1207e9208217
 </div>
 <hr>
 <br>
