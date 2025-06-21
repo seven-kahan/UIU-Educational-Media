@@ -1,0 +1,149 @@
+{% extends 'navbar.html' %}
+{% load static %}
+
+{% block title_block %}
+  {{ title }} {{ user.user_profile.full_name }} (@{{ user.username }})
+{% endblock %}
+
+{% block css_block %}
+<style>
+  .crop {
+    width: 200px;
+    height: 200px;
+    overflow: hidden;
+  }
+
+  .crop img {
+    width: 400px;
+    height: 300px;
+    margin: -75px 0 0 -100px;
+  }
+</style>
+{% endblock %}
+
+{% block body_block %}
+<div class="row">
+  <div class="col-sm-4">
+    {% if user.user_profile.profile_pic %}
+      <img src="/media/{{ user.user_profile.profile_pic }}" width="250px" height="250px" class="rounded-circle">
+    {% else %}
+      <img src="/media/default.png" width="250px" height="250px" class="rounded-circle">
+    {% endif %}
+  </div>
+
+  <!-- profile information -->
+  <div class="col-sm-8">
+    <h1>{{ user.username }}
+      {% if request.user == user %}
+        <a href="{% url 'App_Login:edit' %}" class="btn btn-light">Edit Profile</a>
+      {% endif %}
+    </h1>
+    <br>
+    <h4>{{ posts.count }} posts &nbsp; &nbsp;
+      {{ user.follower.count }} followers &nbsp; &nbsp;
+      {{ user.following.count }} following</h4>
+    <br>
+    <h3>{{ user.user_profile.full_name }}</h3>
+    <p>{{ user.user_profile.description|linebreaks }}</p>
+    <!-- <p> Date of birth: {{ user.user_profile.dob }} </p> -->
+    <p>
+      Personal website (if any):
+      <a style="text-decoration:none;" href="{{ user.user_profile.website }}" target="_blank">
+        {{ user.user_profile.website }}
+      </a>
+    </p>
+    <p>
+      Facebook (if any):
+      <a style="text-decoration:none;" href="{{ user.user_profile.facebook }}" target="_blank">
+        {{ user.user_profile.facebook }}
+      </a>
+    </p>
+
+  </div>
+
+</div>
+<hr>
+
+{% if request.user == user %}
+<!-- New Post Button and Modal -->
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
+  New Post 
+</button>
+
+<div class="modal" id="myModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Post a Photo</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form method="POST" enctype="multipart/form-data">
+          {% csrf_token %}
+          {{ form.as_p }}
+          <button type="submit" class="btn btn-success">Post</button>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<br><br>
+{% endif %}
+
+<!-- Showing Posts -->
+<div class="row">
+  <div class="col-sm-8">
+    {% for post in  user.post.all %}
+      <div style="border: 1px solid #888888">
+        <img src="/media/{{ post.image }}" width="100%" title="{{ post.caption }}">
+        <div style="padding: 20px">
+          {{ post.caption }}<br />
+          <div class="d-flex ">
+            {% if post.pk in liked_post_list %}
+              <a href="{% url 'App_Posts:unliked' pk=post.pk %}">
+                <i class="fa fa-heart" style="font-size: 36px"></i>
+              </a>
+            {% else %}
+              <a href="{% url 'App_Posts:liked' pk=post.pk %}">
+                <i class="fa fa-heart-o" style="font-size: 36px"></i>
+              </a>
+            {% endif %}
+            <p class="mx-3"> {{ post.liked_post.count }} Likes </p>
+          </div>
+
+          <form method="post" action="{% url 'App_Posts:delete_post' pk=post.pk %}" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger btn-sm"
+                    onclick="return confirm('Are you sure you want to delete this post?');">
+              Delete
+            </button>
+          </form>
+          
+        </div>
+
+        
+
+        <!-- Comments Section -->
+        <div style="padding: 20px; border-top: 1px solid #ccc">
+          <strong>Comments:</strong>
+          <ul>
+            {% for comment in post.comments.all %}
+              <li><strong>{{ comment.user.username }}</strong>: {{ comment.content }}</li>
+            {% empty %}
+              <li>No comments yet.</li>
+            {% endfor %}
+          </ul>
+
+          
+        </div>
+
+      </div>
+      <br><br>
+    {% endfor %}
+  </div>
+</div>
+<!-- End Showing Posts -->
+{% endblock %}
